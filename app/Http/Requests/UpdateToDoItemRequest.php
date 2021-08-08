@@ -26,7 +26,7 @@ class UpdateToDoItemRequest extends FormRequest
         return [
             'title' => 'nullable|string',
             'body' => 'nullable|string',
-            'due_date' => 'nullable|date|after_now',
+            'due_date' => 'nullable|date|after:now',
             'attachment' => 'nullable|file'
         ];
     }

@@ -15,28 +15,19 @@ use InvalidArgumentException;
  */
 final class ReminderUnit extends Enum
 {
-    // const Year = 1;
-    const Month = 2;
-    const Week = 3;
-    const Day = 4;
-    // const Hour = 5;
-    // const Minute = 6;
+    const Month = 'month';
+    const Week = 'week';
+    const Day = 'day';
 
-    public static function CarbonMethod(int $type)
+    public static function CarbonMethod(string $type)
     {
         switch ($type) {
-            // case self::Year :
-            //     return 'subYear';
             case self::Month :
                 return 'subMonth';
             case self::Week :
                 return 'subWeek';
             case self::Day :
                 return 'subDay';
-            // case self::Hour :
-            //     return 'subHour';
-            // case self::Minute :
-            //     return 'subMinute';
         }
 
         Throw new InvalidArgumentException("Invalid type supplied `{$type}`");

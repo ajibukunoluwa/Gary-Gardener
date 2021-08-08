@@ -1,10 +1,14 @@
 @component('mail::message')
-# Order Shipped
+# Reminder 🔔
 
-Your order has been shipped!
+Hey there, This is a reminder about the item below
 
-@component('mail::button', ['url' => $reminder->id])
-View Order
+@component('mail::panel')
+**{{ $reminder->toDoItem->title }}**
+
+*{{ $reminder->toDoItem->body }}*
+
+*Due on {{ $reminder->toDoItem->due_date->toDateString()}}*
 @endcomponent
 
 Thanks,<br>

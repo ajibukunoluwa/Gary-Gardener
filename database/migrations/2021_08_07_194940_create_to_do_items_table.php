@@ -20,7 +20,7 @@ class CreateToDoItemsTable extends Migration
                 ->onDelete('cascade');
             $table->string('title');
             $table->text('body');
-            $table->text('attachment_path');
+            $table->text('attachment_path')->nullable();
             $table->timestamp('due_date')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();

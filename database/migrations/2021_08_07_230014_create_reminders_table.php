@@ -19,7 +19,7 @@ class CreateRemindersTable extends Migration
             $table->foreignId('to_do_item_id')
                 ->constrained('to_do_items')
                 ->onDelete('cascade');
-            $table->enum('unit', ReminderUnit::getValues());
+            $table->string('unit');
             $table->integer('duration');
             $table->timestamp('remind_at');
             $table->timestamps();

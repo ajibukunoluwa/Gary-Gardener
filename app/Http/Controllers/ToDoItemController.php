@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reminder;
 use App\Models\ToDoItem;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Resources\ToDoItemResource;
 use App\Http\Requests\ListToDoItemRequest;
@@ -27,8 +28,12 @@ class ToDoItemController extends Controller
             'due_date' => $request->due_date,
         ]);
 
-        $path = $request->file('attachment')->store($toDoItem->getAttachmentFolderPath());
-        $toDoItem->update(['attachment' => $path]);
+        $file = $request->file('attachment');
+        $path = $file->storePubliclyAs(
+            $toDoItem->generateAttachmentPath(), $toDoItem->generateAttachmentName($file->extension())
+        );
+
+        $toDoItem->update(['attachment_path' => $path]);
 
         return json(new ToDoItemResource($toDoItem), 'Item created');
     }
@@ -43,15 +48,15 @@ class ToDoItemController extends Controller
     {
         $query = ToDoItem::query();
 
-        $query->when($request->complete, function ($query) {
+        $query->when($request->has('complete'), function ($query) {
             return $query->whereDone();
-        })->when($request->incomplete, function ($query) {
+        })->when($request->has('incomplete'), function ($query) {
             return $query->whereNotDone();
         });
 
-        $toDoItems = $query->latest('due_date')->paginate($request->per_page ?? 30);
+        $toDoItems = $query->orderBy('due_date', 'asc')->paginate($request->per_page ?? 30);
 
-        return json(ToDoItemResource::collection($toDoItems), 'Items gotten');
+        return ToDoItemResource::collection($toDoItems);
     }
 
     /**
@@ -71,13 +76,15 @@ class ToDoItemController extends Controller
      * @param  \App\Models\ToDoItem  $toDoItem
      * @return \Illuminate\Http\Response
      */
-    public function markAsDone(ToDoItem $toDoItem)
+    public function markAsComplete(ToDoItem $toDoItem)
     {
         if ($toDoItem->creator->isNot(auth()->user())) {
             abortJson('Not your to-do item');
         }
 
-        $toDoItem->markAsDone();
+        if ($toDoItem->isNotComplete()) {
+            $toDoItem->markAsComplete();
+        }
 
         return json(new ToDoItemResource($toDoItem), 'Item marked as done');
     }
@@ -95,28 +102,20 @@ class ToDoItemController extends Controller
             abortJson('Not your to-do item');
         }
 
-        // Handle when an image is also sent
-        if (! empty($request->file('attachment'))) {
-            $path = $request->file('attachment')->store($toDoItem->getAttachmentFolderPath());
+        if ($file = $request->file('attachment')) {
+            $path = $file->storePubliclyAs(
+                $toDoItem->generateAttachmentPath(), $toDoItem->generateAttachmentName($file->extension())
+            );
         }
 
-        // $toDoItem->update([
-        //     'title' => $request->title ?? $toDoItem->title,
-        //     'body' => $request->body ?? $toDoItem->body,
-        //     'due_date' => $request->due_date ?? $toDoItem->due_date,
-        //     'attachment' => $path ?? $toDoItem->path,
-        // ]);
-
         $inputs = $request->except('attachment');
-        $inputs['attachment'] = $path ?? $toDoItem->path;
+        $inputs['attachment_path'] = $path ?? $toDoItem->attachment_path;
 
         $toDoItem->update($inputs);
 
-        $toDoItem->reminders()->update(); // The Reminder boot method will update the `remind_at` columns
-
-        // foreach ($toDoItem->reminders as $reminder) {
-        //     $reminder->update();
-        // }
+        foreach ($toDoItem->reminders as $reminder) {
+            $reminder->save(); // The Reminder boot method will update the `remind_at` columns
+        }
 
         return json(new ToDoItemResource($toDoItem), 'Item updated');
     }

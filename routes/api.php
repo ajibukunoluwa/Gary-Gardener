@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ToDoItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +17,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// No auth routes
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/to-dos', [ToDoItemController::class, 'list']);
+
+// Auth routes
+Route::group(['prefix' => 'to-do',  'middleware' => ['auth:sanctum']], function() {
+    Route::post('/', [ToDoItemController::class, 'store']);
+
+    Route::prefix('{toDoItem}')->group(function () {
+        Route::get('/', [ToDoItemController::class, 'show']);
+        Route::post('/', [ToDoItemController::class, 'update']);
+        Route::delete('/', [ToDoItemController::class, 'delete']);
+        Route::post('/mark-as-complete', [ToDoItemController::class, 'markAsComplete']);
+
+        // Reminders
+        Route::post('/reminder', [ReminderController::class, 'store']);
+    });
 });

@@ -11,17 +11,17 @@ class Reminder extends Model
 {
     use HasFactory;
 
-    protected $guards = [];
+    protected $fillable = ['unit', 'duration'];
+
+    protected $casts = [
+        'remind_at' => 'date',
+        'unit' => 'string',
+        'duration' => 'integer',
+    ];
 
     public function toDoItem(): BelongsTo
     {
         return $this->belongsTo(ToDoItem::class);
-    }
-
-    public function getRemindAt()
-    {
-        $carbonMethod = ReminderUnit::CarbonMethod($this->unit);
-        return $this->toDoItem->due_date->{$carbonMethod}($this->duration);
     }
 
     protected static function booted()
@@ -32,8 +32,15 @@ class Reminder extends Model
             $reminder->remind_at = $reminder->getRemindAt();
         });
 
-        static::updating(function ($reminder) {
+        static::saving(function ($reminder) {
             $reminder->remind_at = $reminder->getRemindAt();
         });
     }
+
+    private function getRemindAt()
+    {
+        $carbonMethod = ReminderUnit::CarbonMethod($this->unit);
+        return $this->toDoItem->due_date->{$carbonMethod}($this->duration);
+    }
+
 }

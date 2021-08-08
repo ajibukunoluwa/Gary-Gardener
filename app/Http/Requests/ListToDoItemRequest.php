@@ -24,7 +24,7 @@ class ListToDoItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'per_page' => 'nullable|int'
+            'per_page' => 'nullable|int',
         ];
     }
 }

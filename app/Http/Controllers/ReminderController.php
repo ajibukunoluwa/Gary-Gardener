@@ -5,17 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Reminder;
 use App\Models\ToDoItem;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreReminderRequest;
 
 class ReminderController extends Controller
 {
-
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\StoreReminderRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, ToDoItem $toDoItem)
+    public function store(StoreReminderRequest $request, ToDoItem $toDoItem)
     {
         if ($toDoItem->creator->isNot(auth()->user())) {
             abortJson('Not your to-do item');

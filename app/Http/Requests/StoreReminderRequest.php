@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ReminderUnit;
 use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,8 +26,15 @@ class StoreReminderRequest extends FormRequest
     public function rules()
     {
         return [
-            'unit' => ['required', new EnumValue(ReminderUnit::class)],
+            'unit' => ['required', 'in:' . implode(",", ReminderUnit::getValues())],
             'duration' => 'required|numeric',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'unit.in' => 'The selected unit must be on of ' . implode(",", ReminderUnit::getValues())
         ];
     }
 }

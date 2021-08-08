@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreToDoItemRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,8 @@ class StoreToDoItemRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string',
-            'body' => 'required|string',
-            'due_date' => 'nullable|date|after:now',
-            'attachment' => 'required|file'
+            'email' => 'required|email',
+            'password' => 'required'
         ];
     }
 }

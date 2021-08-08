@@ -12,8 +12,6 @@ class ReminderMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public $afterCommit = true;
-
     public $reminder;
 
     /**
@@ -33,7 +31,6 @@ class ReminderMail extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        // return $this->view('mails.reminder');
         return $this->markdown('mails.reminder');
     }
 }

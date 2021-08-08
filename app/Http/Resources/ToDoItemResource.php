@@ -14,6 +14,17 @@ class ToDoItemResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $this->loadMissing(['creator']);
+
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'body' => $this->body,
+            'due_date' => $this->due_date,
+            'attachment_url' => $this->attachment_url,
+            'is_complete' => $this->isComplete(),
+            'completed_at' => $this->when($this->isComplete(), $this->completed_at),
+            'creator' => new UserResource($this->creator),
+        ];
     }
 }
