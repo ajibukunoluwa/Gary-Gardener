@@ -59,15 +59,15 @@
                                     </div>
                                 </div>
                             </template>
-                            <div v-if="showSpinner">
+                            <div v-else-if="showSpinner">
                                 <div class="d-flex justify-content-center">
                                     <div class="spinner-border" role="status">
                                         <span class="sr-only">Loading...</span>
                                     </div>
                                 </div>
                             </div>
-                            <div v-else>
-                                No record available. <b-button variant="primary" class="btn-sm float-right" @click="selectedItem = null" v-b-modal.add-to-do-item-modal>Add</b-button>
+                            <div v-else class="text-center my-3 col-md-12">
+                                No record available.
                             </div>
                         </div>
                     </div>
@@ -96,10 +96,10 @@ import AddReminderComponent from './AddReminderComponent.vue'
         spinItem: null,
         action: null,
         toDoItems: [],
-        selectedItem: null,
+        selectedItem: {},
         selectedFilter: '',
         filters: [
-            { value: null, text: 'All' },
+            { value: '', text: 'All' },
             { value: 'complete', text: 'Complete' },
             { value: 'incomplete', text: 'Incomplete' },
         ]

@@ -78,9 +78,8 @@ export default {
         return {
             form: {
                 title: this.selectedItem?.title ?? '',
-                // title: this.selectedItem,
                 body: this.selectedItem?.body ?? '',
-                due_date: '',
+                due_date: this.selectedItem?.due_date ?? '',
                 attachment: null
             },
             errors: {
