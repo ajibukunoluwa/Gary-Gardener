@@ -2011,10 +2011,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       showSpinner: null,
+      action: null,
       toDoItems: []
     };
   },
@@ -2039,10 +2051,11 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
-    markAsComplete: function markAsComplete(itemId) {
+    markAsComplete: function markAsComplete(itemId, index) {
       var _this2 = this;
 
       this.showSpinner = itemId;
+      this.action = 'mark-as-done';
       axios({
         url: Laravel.baseUrl + "/to-do/".concat(itemId, "/mark-as-complete"),
         method: 'POST',
@@ -2051,19 +2064,54 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         var apiResponse = response.data;
-        _this2.showSpinner = null; // this.toDoItems[itemId] = apiResponse.data
-
-        _this2.toDoItems[itemId]['is_complete'] = true;
+        _this2.showSpinner = null;
+        _this2.action = null;
+        _this2.toDoItems[index] = apiResponse.data;
       })["catch"](function (error) {
         if (error.response) {
           var apiData = error.response.data;
 
           _this2.$toastr.e(apiData.message);
+        } else {
+          _this2.$toastr.e('Unknown error occured');
         }
       });
     },
     update: function update() {},
-    "delete": function _delete() {},
+    deleteItem: function deleteItem(itemId, index) {
+      var _this3 = this;
+
+      this.showSpinner = itemId;
+      this.action = 'delete-item';
+      var deleteItem = confirm('Are you sure you want to delete this?');
+
+      if (!deleteItem) {
+        return;
+      }
+
+      axios({
+        url: Laravel.baseUrl + "/to-do/".concat(itemId),
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then(function (response) {
+        var apiResponse = response.data;
+        _this3.showSpinner = null;
+        _this3.action = null;
+        _this3.toDoItems = _this3.toDoItems.filter(function (item) {
+          return item !== _this3.toDoItems[index];
+        });
+      })["catch"](function (error) {
+        if (error.response) {
+          var apiData = error.response.data;
+
+          _this3.$toastr.e(apiData.message);
+        } else {
+          _this3.$toastr.e('Unknown error occured');
+        }
+      });
+    },
     createReminder: function createReminder() {}
   }
 });
@@ -38144,7 +38192,7 @@ var render = function() {
           _c(
             "div",
             { staticClass: "row" },
-            _vm._l(_vm.toDoItems, function(toDoItem) {
+            _vm._l(_vm.toDoItems, function(toDoItem, index) {
               return _c("div", { key: toDoItem.id, staticClass: "card-body" }, [
                 _c(
                   "div",
@@ -38171,43 +38219,67 @@ var render = function() {
                         ? _c("span", { staticClass: "text-success" }, [
                             _vm._v("Done")
                           ])
-                        : _vm._e(),
-                      _vm._v(" "),
-                      !toDoItem.is_complete && _vm.showSpinner != toDoItem.id
-                        ? _c(
+                        : _c(
                             "a",
                             {
-                              staticClass: "btn btn-sm btn-primary",
+                              staticClass: "btn btn-sm btn-outline-primary",
                               attrs: { href: "#" },
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  return _vm.markAsComplete(toDoItem.id, $event)
+                                  return _vm.markAsComplete(toDoItem.id, index)
                                 }
                               }
                             },
-                            [_vm._v("Done")]
-                          )
-                        : _vm._e(),
+                            [
+                              _vm.showSpinner == toDoItem.id &&
+                              _vm.action == "mark-as-done"
+                                ? _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "spinner-border spinner-border-sm",
+                                      attrs: { role: "status" }
+                                    },
+                                    [
+                                      _c("span", { staticClass: "sr-only" }, [
+                                        _vm._v("Loading...")
+                                      ])
+                                    ]
+                                  )
+                                : _c("span", [_vm._v("Done")])
+                            ]
+                          ),
                       _vm._v(" "),
                       _c(
-                        "div",
+                        "a",
                         {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value: _vm.showSpinner == toDoItem.id,
-                              expression: "showSpinner == toDoItem.id"
+                          staticClass: "btn btn-sm btn-outline-danger",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.deleteItem(toDoItem.id, index)
                             }
-                          ],
-                          staticClass: "spinner-border spinner-border-sm",
-                          attrs: { role: "status" }
+                          }
                         },
                         [
-                          _c("span", { staticClass: "sr-only" }, [
-                            _vm._v("Loading...")
-                          ])
+                          _vm.showSpinner == toDoItem.id &&
+                          _vm.action == "delete-item"
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "spinner-border spinner-border-sm",
+                                  attrs: { role: "status" }
+                                },
+                                [
+                                  _c("span", { staticClass: "sr-only" }, [
+                                    _vm._v("Loading...")
+                                  ])
+                                ]
+                              )
+                            : _c("span", [_vm._v("Delete")])
                         ]
                       )
                     ])
