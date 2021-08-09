@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
                             </template>
-                            <div v-else-if="showSpinner">
+                            <div v-if="showSpinner">
                                 <div class="d-flex justify-content-center">
                                     <div class="spinner-border" role="status">
                                         <span class="sr-only">Loading...</span>
@@ -97,7 +97,7 @@ import AddReminderComponent from './AddReminderComponent.vue'
         action: null,
         toDoItems: [],
         selectedItem: null,
-        selectedFilter: null,
+        selectedFilter: '',
         filters: [
             { value: null, text: 'All' },
             { value: 'complete', text: 'Complete' },
@@ -120,6 +120,7 @@ import AddReminderComponent from './AddReminderComponent.vue'
 
             axios({url: Laravel.baseUrl + `/to-do?${this.selectedFilter}`, method: 'GET', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }  })
             .then(response => {
+                this.showSpinner = null
                 let apiResponse = response.data
                 this.toDoItems = apiResponse.data
                 this.action = null
