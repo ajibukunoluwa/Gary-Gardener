@@ -2,6 +2,7 @@
 
 composer install
 npm install
+npm run production
 
 php artisan key:generate
 php artisan migrate

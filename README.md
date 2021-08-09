@@ -4,6 +4,8 @@ A small to-do list REST API using Laravel
 
 ## Set Up 
  Clone repo `git clone https://github.com/ajibukunoluwa/Gary-Gardener.git`
+
+ `cd Gary-Gardener`
  
  `cp .env.example .env` 
  
