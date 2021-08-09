@@ -39,6 +39,6 @@ class StoreReminderRequest extends FormRequest
 
     public function remindAtIsBeforeNow(): bool
     {
-        return $this->toDoItem->generateReminderDate($this->unit, $this->duration)->lt(now());
+        return $this->toDoItem->generateReminderDate($this->unit, $this->duration)->lte(now());
     }
 }

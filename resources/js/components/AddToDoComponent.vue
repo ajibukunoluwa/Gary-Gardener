@@ -41,6 +41,7 @@
                                 required
                             ></b-form-file>
                             <small v-for="(error, index) in errors.attachment" :key="index" class="form-text text-danger">{{ error }}</small>
+                            <a v-if="selectedItem" :href="selectedItem.attachment_url" target="_blank">View existing file</a>
                         </b-form-group>
 
                         <b-form-group id="due-date-input-group" label="Due date:" label-for="due-date-input">
@@ -124,7 +125,6 @@ export default {
                 }
             })
         },
-
         url() {
             if (this.isUpdateRequest()) {
                 return Laravel.baseUrl + `/to-do/${selectedItem.id}`
@@ -132,16 +132,13 @@ export default {
 
             return Laravel.baseUrl + `/to-do`
         },
-
         isUpdateRequest() {
             return this.selectedItem && typeof this.selectedItem === 'object'
         },
-
         onReset(event) {
             event.preventDefault()
             this.resetForm()
         },
-
         resetForm() {
             // Reset our form values
             this.form.title = ''

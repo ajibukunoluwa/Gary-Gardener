@@ -25,11 +25,11 @@ Vue.use(VueToastr);
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-// Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)
 
-// Optionally install the BootstrapVue icon components plugin
 Vue.use(IconsPlugin)
+
+Vue.config.productionTip = false;
 
 window.Laravel = {
     "baseUrl": "http://localhost:3000/api"
@@ -127,19 +127,6 @@ const store = new Vuex.Store({
 // if (token) {
 //   Vue.prototype.$http.defaults.headers.common['Authorization'] = token
 // }
-
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-// Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component('app-header', require('./components/HeaderComponent.vue').default);
 

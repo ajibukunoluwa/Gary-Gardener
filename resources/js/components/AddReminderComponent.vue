@@ -20,8 +20,8 @@
                 </template>
 
                 <template #modal-footer>
+                    <b-button type="reset" class="btn-sm" variant="outline-danger" @click="$bvModal.hide('add-reminder-modal')">Close</b-button>
                     <b-button type="submit" class="btn-sm" variant="primary" @click="addReminder()">Submit</b-button>
-                    <b-button type="reset" class="btn-sm" variant="danger" @click="resetForm()">Reset</b-button>
                 </template>
 
             </b-modal>
@@ -100,11 +100,6 @@ export default {
                     this.$toastr.e('An error occured');
                 }
             })
-        },
-
-        onReset(event) {
-            event.preventDefault()
-            this.resetForm()
         },
 
         resetForm() {

@@ -24,11 +24,10 @@
                             <template v-if="toDoItems.length">
                                 <div v-for="(toDoItem, index) in toDoItems" class=card-body :key="toDoItem.id">
                                     <div class="card" style="width: 18rem;">
-                                        <!-- <b-img-lazy :src="toDoItem.attachment_url" fluid :alt="toDoItem.title"></b-img-lazy> -->
-                                        <img :src="toDoItem.attachment_url" class="card-img-top" :alt="toDoItem.title">
                                         <div class="card-body">
                                             <h5 class="card-title">{{ toDoItem.title }}</h5>
                                             <p class="card-text text-muted">{{ toDoItem.body }}</p>
+                                            <p><a v-if="toDoItem" :href="toDoItem.attachment_url" target="_blank">View file</a></p>
 
                                             <span v-if="toDoItem.is_complete" class="text-success">Done</span>
                                             <a v-else href="#" class="btn btn-sm btn-outline-success" @click.prevent="markAsComplete(toDoItem.id, index)">
@@ -61,7 +60,7 @@
                                 </div>
                             </template>
                             <div v-else-if="showSpinner">
-                                <div class="text-center">
+                                <div class="d-flex justify-content-center">
                                     <div class="spinner-border" role="status">
                                         <span class="sr-only">Loading...</span>
                                     </div>
@@ -76,7 +75,7 @@
             </div>
         </div>
 
-        <add-to-do-component @addedNewItem="getItems()" :selectedItem="selectedItem"></add-to-do-component>
+        <add-to-do-component @addedNewItem="getItems(true)" :selectedItem="selectedItem"></add-to-do-component>
         <add-reminder-component v-if="selectedItem" :selectedItem="selectedItem"></add-reminder-component>
     </div>
 </template>
@@ -112,8 +111,12 @@ import AddReminderComponent from './AddReminderComponent.vue'
     },
 
     methods: {
-        getItems() {
+        getItems(afresh) {
             this.showSpinner = true
+
+            if (afresh) {
+                this.selectedFilter = null
+            }
 
             axios({url: Laravel.baseUrl + `/to-do?${this.selectedFilter}`, method: 'GET', headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }  })
             .then(response => {

@@ -51,8 +51,7 @@ class ToDoItem extends Model
 
     public function generateAttachmentPath(): string
     {
-        return "attachments/to_do_items/{$this->id}";
-        // return "public/attachments/to_do_items/{$this->id}";
+        return "public/attachments/to_do_items/{$this->id}";
     }
 
     public function generateAttachmentName(string $extension): string
@@ -62,9 +61,7 @@ class ToDoItem extends Model
 
     public function getAttachmentUrlAttribute()
     {
-        // return public_path($this->attachment_path);
-        return url($this->attachment_path);
-        // return asset($this->attachment_path);
+        return asset(str_replace('public', 'storage', $this->attachment_path));
     }
 
     public function generateReminderDate(string $unit, int $duration)
