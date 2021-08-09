@@ -21,6 +21,10 @@ class ReminderController extends Controller
             abortJson('Not your to-do item');
         }
 
+        if (! $toDoItem->allowsReminder()) {
+            abortJson('Due date is required to set reminder');
+        }
+
         if ($request->remindAtIsBeforeNow()) {
             abortJson("Invalid duration! Duration has to be after now");
         }

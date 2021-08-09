@@ -34,6 +34,11 @@ class ToDoItem extends Model
         $this->update(['completed_at' => now()]);
     }
 
+    public function allowsReminder(): bool
+    {
+        return ! empty($this->due_date);
+    }
+
     public function isComplete(): bool
     {
         return ! empty($this->completed_at);
@@ -47,6 +52,7 @@ class ToDoItem extends Model
     public function generateAttachmentPath(): string
     {
         return "attachments/to_do_items/{$this->id}";
+        // return "public/attachments/to_do_items/{$this->id}";
     }
 
     public function generateAttachmentName(string $extension): string
@@ -64,7 +70,7 @@ class ToDoItem extends Model
     public function generateReminderDate(string $unit, int $duration)
     {
         $carbonMethod = ReminderUnit::CarbonMethod($unit);
-        return $this->due_date->{$carbonMethod}($duration);
+        return optional($this->due_date)->{$carbonMethod}($duration);
     }
 
     // Scopes

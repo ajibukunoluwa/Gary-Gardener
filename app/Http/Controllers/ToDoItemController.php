@@ -46,7 +46,7 @@ class ToDoItemController extends Controller
      */
     public function list(ListToDoItemRequest $request)
     {
-        $query = auth()->user()->toDoItems();
+        $query = auth()->user()->toDoItems()->with(['creator']);
 
         $query->when($request->has('complete'), function ($query) {
             return $query->whereDone();
@@ -54,7 +54,7 @@ class ToDoItemController extends Controller
             return $query->whereNotDone();
         });
 
-        $toDoItems = $query->orderBy('due_date', 'asc')->paginate($request->per_page ?? 30);
+        $toDoItems = $query->orderBy('due_date', 'asc')->paginate($request->per_page ?? 100);
 
         return ToDoItemResource::collection($toDoItems);
     }

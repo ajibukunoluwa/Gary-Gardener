@@ -10,12 +10,12 @@
                             <div class="form-group">
                                 <label>Email address</label>
                                 <input type="email" v-model="email" class="form-control" placeholder="Enter email">
-                                <small v-if="errors.email" class="form-text text-muted text-danger">{{ errors.email }}</small>
+                                <small v-for="(error, index) in errors.email" :key="index" class="form-text text-danger">{{ error }}</small>
                             </div>
                             <div class="form-group">
                                 <label>Password</label>
                                 <input type="password" v-model="password" class="form-control" placeholder="Password">
-                                <small v-if="errors.email" class="form-text text-muted text-danger">{{ errors.password }}</small>
+                                <small v-for="(error, index) in errors.password" :key="index" class="form-text text-danger">{{ error }}</small>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -33,8 +33,8 @@
         email : "",
         password : "",
         errors: {
-            email: null,
-            password: null,
+            email: [],
+            password: [],
         },
       }
     },
@@ -53,8 +53,8 @@
                 let apiData = error.response.data
                 this.$toastr.e(apiData.message);
 
-                this.errors.email = apiData.errors.email[0] ?? ""
-                this.errors.password = apiData.errors.password[0] ?? ""
+                this.errors.email = apiData.errors.email ?? []
+                this.errors.password = apiData.errors.password ?? []
             }
         })
       }

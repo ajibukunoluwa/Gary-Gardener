@@ -14,11 +14,22 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import { routes } from './routes'
 import VueToastr from "vue-toastr"
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(VueAxios, axios)
 Vue.use(VueToastr);
+
+// Import Bootstrap an BootstrapVue CSS files (order is important)
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+
+// Make BootstrapVue available throughout your project
+Vue.use(BootstrapVue)
+
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin)
 
 window.Laravel = {
     "baseUrl": "http://localhost:3000/api"
