@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ReminderUnit;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -58,6 +59,12 @@ class ToDoItem extends Model
         // return public_path($this->attachment_path);
         return url($this->attachment_path);
         // return asset($this->attachment_path);
+    }
+
+    public function generateReminderDate(string $unit, int $duration)
+    {
+        $carbonMethod = ReminderUnit::CarbonMethod($unit);
+        return $this->due_date->{$carbonMethod}($duration);
     }
 
     // Scopes

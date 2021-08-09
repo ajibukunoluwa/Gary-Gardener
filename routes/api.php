@@ -19,10 +19,10 @@ use App\Http\Controllers\ToDoItemController;
 
 // No auth routes
 Route::post('/login', [AuthController::class, 'login']);
-Route::get('/to-dos', [ToDoItemController::class, 'list']);
 
 // Auth routes
 Route::group(['prefix' => 'to-do',  'middleware' => ['auth:sanctum']], function() {
+    Route::get('/', [ToDoItemController::class, 'list']);
     Route::post('/', [ToDoItemController::class, 'store']);
 
     Route::prefix('{toDoItem}')->group(function () {

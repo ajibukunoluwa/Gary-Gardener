@@ -46,7 +46,7 @@ class ToDoItemController extends Controller
      */
     public function list(ListToDoItemRequest $request)
     {
-        $query = ToDoItem::query();
+        $query = auth()->user()->toDoItems();
 
         $query->when($request->has('complete'), function ($query) {
             return $query->whereDone();

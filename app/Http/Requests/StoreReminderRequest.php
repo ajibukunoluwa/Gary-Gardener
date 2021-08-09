@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Enums\ReminderUnit;
-use BenSampo\Enum\Rules\EnumValue;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreReminderRequest extends FormRequest
@@ -36,5 +35,10 @@ class StoreReminderRequest extends FormRequest
         return [
             'unit.in' => 'The selected unit must be on of ' . implode(",", ReminderUnit::getValues())
         ];
+    }
+
+    public function remindAtIsBeforeNow(): bool
+    {
+        return $this->toDoItem->generateReminderDate($this->unit, $this->duration)->lt(now());
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\ReminderUnit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,18 +28,11 @@ class Reminder extends Model
         parent::booted();
 
         static::creating(function ($reminder) {
-            $reminder->remind_at = $reminder->getRemindAt();
+            $reminder->remind_at = $reminder->toDoItem->generateReminderDate($reminder->unit, $reminder->duration);
         });
 
         static::saving(function ($reminder) {
-            $reminder->remind_at = $reminder->getRemindAt();
+            $reminder->remind_at = $reminder->toDoItem->generateReminderDate($reminder->unit, $reminder->duration);
         });
     }
-
-    private function getRemindAt()
-    {
-        $carbonMethod = ReminderUnit::CarbonMethod($this->unit);
-        return $this->toDoItem->due_date->{$carbonMethod}($this->duration);
-    }
-
 }

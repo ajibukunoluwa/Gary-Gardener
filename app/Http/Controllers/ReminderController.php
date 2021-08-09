@@ -21,7 +21,11 @@ class ReminderController extends Controller
             abortJson('Not your to-do item');
         }
 
-        $toDoItem->reminders()->create([
+        if ($request->remindAtIsBeforeNow()) {
+            abortJson("Invalid duration! Duration has to be after now");
+        }
+
+        $toDoItem->reminders()->firstOrCreate([
             'unit' => $request->unit,
             'duration' => $request->duration,
         ]);
