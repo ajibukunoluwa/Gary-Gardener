@@ -4,14 +4,14 @@ A small to-do list REST API using Laravel
 
 ## Set Up 
  Clone repo `git clone https://github.com/ajibukunoluwa/Gary-Gardener.git`
-
- `cd Gary-Gardener`
  
  `cp .env.example .env` 
  
  Set `database`, `queue`, and `mail` configurations in `.env` file 
 
 run `bash start.sh`
+
+run `php artisan schedule:run`
 
 Visit [https://localhost:3000](https://localhost:3000).
 
